@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Audio to Text Converter</title>
+    <style>
+        /* Add some basic styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/deepspeech/dist/deepspeech.min.js"></script>
+</head>
+<body>
+    <input type="file" id="audioFileInput">
+    <button onclick="convertToText()">Convert to Text</button>
+    <div id="transcriptionResult"></div>
+
+    <script>
+        async function convertToText() {
+            const fileInput = document.getElementById('audioFileInput');
+            const audioFile = fileInput.files[0];
+
+            if (!audioFile) {
+                alert('Please select an audio file!');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = async function (event) {
+                const audioData = event.target.result;
+
+                // Load the DeepSpeech model
+                const modelPath = 'https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/deepspeech-0.9.3-models.pbmm';
+                const scorerPath = 'https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/deepspeech-0.9.3-models.scorer';
+                const model = new DeepSpeech.Model(modelPath);
+                model.enableExternalScorer(scorerPath);
+
+                // Transcribe the audio file
+                const result = model.stt(audioData);
+                document.getElementById('transcriptionResult').innerText = result;
+            };
+            reader.readAsArrayBuffer(audioFile);
+        }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lamejs/1.2.0/lame.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/Style.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/animations.css') }}">
+    <link rel="stylesheet" href="../static/css/Style.css">
+    <link rel="stylesheet" href="../static/css/animations.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body>
+    <div class="wrapper">
+        <div class="navbar">
+            <div class="logo">
+                Logo
+            </div>
+            <div class="list-items">
+                <ul>
+                    <li>Home</li>
+                    <li>About</li>
+                    <li>Services</li>
+                    <li>Contact</li>
+                </ul>
+            </div>
+            <div class="button-explore">
+                <Button >Explore</Button>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="home">
+                <div class="left-text-container">
+                  <div class="text">
+                    <span>AI</span><br>
+                    <span>Transcription</span><br>
+                    <span>Tool</span><br>
+                    <span id="ai">Ai is future...</span>
+                  </div>
+                </div>
+                <div class="right-button-container">
+                    <div class="button-div">
+                  <button id="explore">Explore</button>
+                </div>
+                </div>
+            </div>
+            <div class="explore">
+                
+                <div class="record-container">
+                    <div class="left-img-div">
+                       <div class="heading">
+                        <span id="whisper">Transcription From whisper</span>
+                       </div>
+                    </div> 
+
+                    <div class="right-buttons-div">
+                      <div class="start-recoding">
+
+                        
+                        <div class="right-btn-div">
+                            <span id="text-start-rec" >
+                                Start Recording
+                            </span>
+                            <div class="start-rec-btn">
+                              <button onclick="handleMic()" class="record-btn" id="record-btn"> 
+                                <svg height="16" width="15" class="red-circ" id="red-circ">
+                                <circle class="red_circ" cx="8" cy="8" r="5" fill="red" />
+                                
+                            </svg><span id="cross_icon" class="cancel-btun">
+                                <div class="cross_btn"><i class="ri-close-line" id="cancel"></i></div>
+                                
+                            </span><span id="red">Rec</span></button>
+
+                            <div class="show-recording-animation" id="show-record-animation">
+                                <svg height="30" width="30" class="blinking">
+                                    <circle cx="15" cy="15" r="8" fill="red" />
+                                    Sorry, your browser does not support inline SVG.  
+                                </svg>
+                                <div class="show-time" id="show-time">
+                                   0:0:0
+                                </div> 
+                               
+                                <div class="show-record-anim">
+                                    <div class="boxContainer">
+                                        <div class="box box1"></div>
+                                        <div class="box box2"></div>
+                                        <div class="box box3"></div>
+                                        <div class="box box4"></div>
+                                        <div class="box box5"></div>
+                                      </div>
+                                </div>
+                                
+                                <div class="send-to-upper">
+                                       <div class="pause_button" onclick="PauseTimer()">
+                                        <button id="pause" ><i class="ri-pause-line"></i></button>
+                                        <button id="play"   ><i class="ri-play-fill"></i></button>
+                                       </div>
+                                    <button class="download" id="download" onclick="stop_mic()">
+                                        <i class="ri-close-line"></i>
+                                    </button>
+                                    
+                                   
+                                </div>
+                            </div>
+
+                            </div>
+                        </div>
+
+                        <div class="upload_div">
+                            
+                            <button id="upload-btn">Upload<i class="ri-arrow-right-line"></i></button>
+                        </div>
+
+                        <div class="ai-trasicption-div">
+                            <div class="inner-ai-div">
+                                <div class="message user-message">human</div>
+                                <div class="clear"></div>
+                                <div class="message bot-message">Bot.</div>
+                                <div class="clear"></div>
+                                
+                            <audio id="audio" src="" controls></audio>
+                            </div>
+                        </div>
+                      </div>
+
+                      
+                    </div>
+                </div>
+            </div>
+            <div class="gpt-enhancer">
+                <div class="left-image">
+                  <div class="heading">
+                    GPT Enhancer
+                  </div>
+                </div>
+                <div class="right-content">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+</body>
+</html>

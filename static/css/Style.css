@@ -1,0 +1,390 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;900&family=Poppins:wght@300;400;700&family=Roboto:wght@300&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+    font-family: 'Lato', sans-serif;
+    box-sizing: border-box;
+    
+}
+ html,body{
+    height: 100%;
+    width: 100%;  
+ }
+
+.wrapper{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  
+    width: 100%;
+    height: 100%;
+    color: white;
+    
+   
+}
+
+ul{
+    display: inline;
+    
+}
+li{
+   list-style: none;
+   display: inline;
+   cursor: pointer;
+    
+
+}
+
+.navbar{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    height: 80px;
+    border-bottom: 1px solid grey;
+    position: fixed;
+    z-index: 999;
+    background-color: transparent;
+    display: none;
+   
+}
+
+.navbar>div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.list-items{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+.list-items ul li{
+    font-size: 18px;
+    font-weight: 500;
+    margin: 0px 0px 0px 20px;
+}
+
+.button-explore button{
+    padding: 7px 10px;
+    border: .75px solid gray;
+    border: none;
+    border-radius: 15px;
+    background-color: rgb(197, 43, 68);
+    
+}
+
+.content{
+    
+    height:100%;
+    width: 100%;
+    
+}
+
+.content>div{
+  display: flex;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  
+
+}
+.home{
+    justify-content: center;
+    background-color: aqua;
+    background-image: url('../assets/homebg.jpg');
+    background-size: cover;
+    background-attachment: contain;
+}
+
+.home>div{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 50%;
+    
+}
+.left-text-container{
+    
+    
+    justify-content: center;
+    padding: 0px 60px;
+}
+.text{
+    
+    font-size: 70px;
+    height: 50%;
+    
+    line-break: auto;
+}
+
+.right-button-container{
+    /* background-color: red; */
+    justify-content: center;
+}
+.button-div{
+     /* background-color: white; */
+
+     margin-top: 250px;
+
+}
+.button-div button{
+    margin-left: 50px;
+    padding: 7px 50px ;
+    /* background-color: white; */
+    color:black;
+    border:1px solid transparent;
+    outline:none;
+    border-radius: 5px;
+}
+
+.button-div button:hover{
+    border:1px solid rgb(19, 19, 19);
+    
+}
+#ai{
+    margin-bottom: 20px;
+    margin-left: 20px;
+    font-size: 30px;
+    line-height: 1px;
+}
+.explore{
+    justify-content: flex-start;
+    background-color: transparent;
+    background-color: black;
+}
+.gpt-enhancer{
+    background-color: black;
+    justify-content: center;
+}
+
+.gpt-enhancer>div{
+    height: 100%;
+    width: 50%;
+    
+    display: flex;
+    
+    align-items: center;
+}
+
+
+.record-container{
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     height: calc(100% - 70px);
+     width: 100%;
+     
+
+     
+}
+.record-container>div{
+    height: 100%;
+    
+    
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+}
+.left-img-div{
+    width: 40%;
+}
+.right-buttons-div{
+    width:60%;
+    
+}
+
+.start-recoding{
+    
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    height: 100%;   
+    flex-direction: column;
+    /* background-color: rgb(40, 21, 21);  */
+    
+}
+
+.right-btn-div,.upload_div{
+    display: flex;
+    justify-content: flex-end;
+    /* flex-direction: column; */
+    align-items: center;
+    
+    height: auto;
+    width: 60%;
+    /* background-color: red; */
+
+}
+.upload_div button:hover{
+   background-color: transparent;
+   border: 1px solid white;
+   color:white;
+    box-shadow: 1px 13px 16px -8px rgba(80,76,76,0.55);
+}
+
+.right-btn-div{
+    margin-top: 5vw;
+}
+.upload_div{
+    /* background-color: blue; */
+    height: auto;
+    padding: 10px;
+    
+    
+}
+.upload_div button{
+    margin-right: 20px;
+    padding: 7px 5px;
+    
+    outline: none;
+    border-radius: 20px;
+    background-color: white;
+    transition: all .2s ease-in;
+    border:1px solid transparent;
+
+}
+.start-rec-btn{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+   
+}
+
+#record-btn{
+    padding:7px 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    outline: none;
+    border-radius: 20px;
+    /* background-color: white; */
+}
+.show-recording-animation{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    
+   display: none;
+}
+
+
+.show-recording-animation>div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+#red{
+    margin-left: 2px;
+    
+}
+
+#text-start-rec{
+    color:white;
+    font-size: 30px;
+    font-weight: 600;
+   
+    margin-right: 10px;
+}
+.pause_button button,.send-to-upper button{
+    background-color: transparent;
+    border: none;
+    color:white;
+    font-size: 25px;
+    
+}
+
+
+.cancel-btun{
+    color:red;
+    display: none;
+}
+#play{
+    display: none;
+}
+.cancel-btun i{
+    font-size: 20px;
+   
+}
+
+.ai-trasicption-div{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    /* background-color: red; */
+    width: 100%;
+    height: 60%;
+}
+
+.gpt-enhancer{
+    background-color: black;
+    justify-content: center;
+}
+
+.gpt-enhancer>div{
+    height: 100%;
+    width: 50%;
+    /* background-color: red; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.heading{
+   
+    /* background-color: aqua; */
+    width: 100%;
+    font-size: 50px;
+    background: linear-gradient(45deg,white,green,yellow, red, blue);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+#whisper{
+    font-size: 40px;
+}
+.inner-ai-div{
+   margin: auto;
+   
+    color:white;
+    width: 60%;
+    height: 100%;
+    /* background-color: azure; */
+    border-radius: 20px;
+    border:1px solid rgb(110, 110, 110);
+    overflow-x: none;
+    overflow-y: auto;
+     
+} .message {
+    padding: 10px;
+    margin: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    max-width: 70%;
+  }
+
+  .user-message {
+    background-color: #4CAF50;
+    color: white;
+    float: right;
+  }
+
+  .bot-message {
+    background-color: #008CBA;
+    color: white;
+    float: left;
+  }
+
+  .clear {
+    clear: both;
+  }
