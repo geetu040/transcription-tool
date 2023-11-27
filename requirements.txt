@@ -1,0 +1,2 @@
+git+https://github.com/pyannote/pyannote-audio
+git+https://github.com/openai/whisper.git
