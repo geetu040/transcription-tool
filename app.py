@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify
 from audio import transcribe
+# from test_audio import transcribe
 
 app = Flask(__name__)
 
@@ -11,13 +12,14 @@ def index():
 def handle_audio_file():
     try:
         audio_file = request.files['audioFile']
-        num_speakers = request.files.get('numSpeakers', 2)
+        num_speakers = request.form.get('n_speakers')
+        model_size = request.form.get('model_size')
 
         if audio_file and (audio_file.mimetype.startswith('audio/mp3') or audio_file.mimetype.startswith('audio/wav') or audio_file.filename.endswith('.mp3') or audio_file.filename.endswith('.wav')):
 
             file_path = 'uploads/' + audio_file.filename
             audio_file.save(file_path)
-            transcription = transcribe(file_path, num_speakers)
+            transcription = transcribe(file_path, num_speakers, model_size)
 
             return jsonify({
                 'message': 'File uploaded successfully',

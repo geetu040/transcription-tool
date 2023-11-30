@@ -17,14 +17,25 @@ import contextlib
 from sklearn.cluster import AgglomerativeClustering
 import numpy as np
 
-# model = whisper.load_model("large-v2")
-model = whisper.load_model("tiny")
 embedding_model = PretrainedSpeakerEmbedding( 
     "speechbrain/spkrec-ecapa-voxceleb",
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 )
 
-def transcribe(audio, num_speakers):
+def transcribe(audio, num_speakers: int, model_size: str):
+
+  # VERIFICATION
+  num_speakers = int(num_speakers)
+  num_speakers = max(num_speakers, 1)
+  num_speakers = min(num_speakers, 10)
+  model_size = model_size.lower()
+  if model_size not in ['tiny', 'small', 'medium', 'large']:
+    model_size = 'tiny'
+
+  # LOADING THE MODEL
+  # model = whisper.load_model("large-v2")
+  model = whisper.load_model(model_size)
+
   path, error = convert_to_wav(audio)
   if error is not None:
     return error

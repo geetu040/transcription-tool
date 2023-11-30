@@ -113,6 +113,19 @@
                             <button id="upload-btn">Upload<i class="ri-arrow-right-line"></i></button>
                         </div>
 
+                        <div id="speakerSettings">
+                            <label for="numberOfSpeakers">Number of Speakers:</label>
+                            <input type="number" id="numberOfSpeakers" name="numberOfSpeakers" min="1" max="10" value="2">
+                        
+                            <label for="modelSize">Model Size:</label>
+                            <select id="modelSize" name="modelSize">
+                                <option value="tiny" selected>Tiny</option>
+                                <option value="small">Small</option>
+                                <option value="medium">Medium</option>
+                                <option value="large">Large</option>
+                            </select>
+                        </div>
+
                         <div class="ai-trasicption-div">
                             <div class="inner-ai-div">
                                 <div class="message user-message">human</div>

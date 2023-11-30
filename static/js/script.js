@@ -42,6 +42,9 @@ const audio = document.getElementById('audio');
 upload_input.type = "file";
 upload_input.accept = "audio/*";
 
+const numberOfSpeakersInput = document.getElementById("numberOfSpeakers");
+const modelSizeSelect = document.getElementById("modelSize");
+
 //////////////////////////////////////////////////
 function UpdateTime() {
 
@@ -337,6 +340,8 @@ function handle_audio_file(file) {
 
         // Now, you can use the Fetch API to send the file to a URL
         const formData = new FormData();
+        formData.append('n_speakers', numberOfSpeakersInput.value);
+        formData.append('model_size', modelSizeSelect.value);
         formData.append('audioFile', file);
 
         // Replace 'YOUR_SERVER_URL' with the actual URL where you want to send the file
