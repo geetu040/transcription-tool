@@ -1,113 +1,105 @@
-import whisper
-import datetime
+import os
 
-import subprocess
-from tqdm import tqdm
+from dotenv import load_dotenv
+load_dotenv()
 
-import torch
-import pyannote.audio
-from pyannote.audio.pipelines.speaker_verification import PretrainedSpeakerEmbedding
+import assemblyai as aai
+aai.settings.api_key = os.environ.get("ASSEMBLY_KEY")
 
-from pyannote.audio import Audio
-from pyannote.core import Segment
+import openai
+openai.api_key = os.environ.get("OPEN_AI_API_KEY")
 
-import wave
-import contextlib
+import time
+def watcher(func):
+	def wrapper(*args, **kwargs):
+		time_i = time.time()
+		print(f"Starting {func.__name__} ....... ", end="")
+		result = func(*args, **kwargs)
+		print(f"Done in {round(time.time() - time_i, 2)} seconds")
+		return result
+	return wrapper
 
-from sklearn.cluster import AgglomerativeClustering
-import numpy as np
+def transcribe(file_path, num_speakers, lang):
+	transcript = transcribe_assembly(file_path, num_speakers, lang)
+	transcript = identify_speakers(transcript)
+	description = describe(transcript)
+	return transcript, description
 
-embedding_model = PretrainedSpeakerEmbedding( 
-    "speechbrain/spkrec-ecapa-voxceleb",
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-)
+@watcher
+def transcribe_assembly(file_path, num_speakers, lang):
 
-def transcribe(audio, num_speakers: int, model_size: str):
+	config = aai.TranscriptionConfig(
+		speaker_labels=True,
+		speakers_expected=num_speakers,
+		language_code=lang,
+	)
 
-  # VERIFICATION
-  num_speakers = int(num_speakers)
-  num_speakers = max(num_speakers, 1)
-  num_speakers = min(num_speakers, 10)
-  model_size = model_size.lower()
-  if model_size not in ['tiny', 'small', 'medium', 'large']:
-    model_size = 'tiny'
+	transcript = aai.Transcriber().transcribe(file_path, config)
 
-  # LOADING THE MODEL
-  # model = whisper.load_model("large-v2")
-  model = whisper.load_model(model_size)
+	return [(utt.speaker, utt.text) for utt in transcript.utterances]
 
-  path, error = convert_to_wav(audio)
-  if error is not None:
-    return error
+@watcher
+def identify_speakers(transcript):
+	start_convo, speakers_template = gpt_prepare(transcript)
+	response = gpt_get_response(start_convo, speakers_template)
+	try:
+		speakers = gpt_parse_response(response)
+	except Exception as e:
+		print(e)
+		speakers = {}
+	new_transcription = gpt_embed_speakers(transcript, speakers, speakers_template)
+	return new_transcription
 
-  duration = get_duration(path)
-  if duration > 4 * 60 * 60:
-    return "Audio duration too long"
+@watcher
+def describe(transcript):
 
-  print("Transcribing ...", end="")
-  result = model.transcribe(path)
-  print("Done")
-  segments = result["segments"]
+	content = f"Following is the conversation, generate me a report on this: {transcript}"
 
-  num_speakers = min(max(round(num_speakers), 1), len(segments))
+	response = openai.ChatCompletion.create(
+		model="gpt-3.5-turbo",
+		messages=[{"role": "user", "content": content}],
+		temperature=0.2,
+	)
 
-  if len(segments) == 1:
-    segments[0]['speaker'] = 'SPEAKER 1'
-  else:
-    embeddings = make_embeddings(path, segments, duration)
-    add_speaker_labels(segments, embeddings, num_speakers)
-  output = get_output(segments)
-  return output
+	description = response.choices[0].message["content"]
 
-def convert_to_wav(path):
-  if path[-3:] != 'wav':
-    new_path = '.'.join(path.split('.')[:-1]) + '.wav'
-    try:
-      subprocess.call(['ffmpeg', '-i', path, new_path, '-y'])
-    except:
-      return path, 'Error: Could not convert file to .wav'
-    path = new_path
-  return path, None
+	return description
 
-def get_duration(path):
-  with contextlib.closing(wave.open(path,'r')) as f:
-    frames = f.getnframes()
-    rate = f.getframerate()
-    return frames / float(rate)
+def gpt_prepare(transcription):
+	conversation = transcription[:10]
+	unique_speakers = sorted(list(set([i[0] for i in conversation])))
+	speakers = {
+		k: "<SPEAKER NAME>" for k in unique_speakers
+	}
+	return conversation, speakers
 
-def make_embeddings(path, segments, duration):
-  embeddings = np.zeros(shape=(len(segments), 192))
-  i = 0
-  for segment in tqdm(segments, desc="Processing segments"):
-    embeddings[i] = segment_embedding(path, segment, duration)
-    i += 1
-  return np.nan_to_num(embeddings)
+def gpt_get_response(conversation, speakers):
+	content = [{"conversation": conversation, "speakers": speakers}]
+	content = str(content)
+	response = openai.ChatCompletion.create(
+		model="gpt-3.5-turbo",
+		messages=[{"role": "user", "content": content}],
+		temperature=0,
+	)
+	return response
 
-audio = Audio()
+def gpt_parse_response(response):
+	response = response.choices[0].message['content']
+	response_de = eval(response)
+	if type(response_de) == list:
+		response_de = response_de[0]
+	speakers = response_de.get("speakers", {})
+	return speakers
 
-def segment_embedding(path, segment, duration):
-  start = segment["start"]
-  # Whisper overshoots the end timestamp in the last segment
-  end = min(duration, segment["end"])
-  clip = Segment(start, end)
-  waveform, sample_rate = audio.crop(path, clip)
-  return embedding_model(waveform[0, None, None])
-
-def add_speaker_labels(segments, embeddings, num_speakers):
-  clustering = AgglomerativeClustering(num_speakers).fit(embeddings)
-  labels = clustering.labels_
-  for i in range(len(segments)):
-    segments[i]["speaker"] = 'SPEAKER ' + str(labels[i] + 1)
-
-def time(secs):
-  return datetime.timedelta(seconds=round(secs))
-
-def get_output(segments):
-  output = ''
-  for (i, segment) in tqdm(enumerate(segments)):
-    if i == 0 or segments[i - 1]["speaker"] != segment["speaker"]:
-      if i != 0:
-        output += '\n\n'
-      output += segment["speaker"] + ' ' + str(time(segment["start"])) + '\n\n'
-    output += segment["text"][1:] + ' '
-  return output
+def gpt_embed_speakers(transcript, speakers, speakers_template):
+	final_transcription = []
+	for speaker, said in transcript:
+		speaker = speakers.get(
+			speaker,
+			f"Speaker {speakers_template.get(speaker)}"
+		)
+		final_transcription.append(
+			f"{speaker}: {said}"
+		)
+	final_transcription = "\n".join(final_transcription)
+	return final_transcription

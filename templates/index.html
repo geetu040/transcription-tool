@@ -10,6 +10,15 @@
     <link rel="stylesheet" href="../static/css/Style.css">
     <link rel="stylesheet" href="../static/css/animations.css">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        /* CSS for the hidden paragraph */
+        .hidden-paragraph {
+            height: 0;
+            overflow: hidden;
+            transition: height 0.3s ease;
+        }
+    </style>
+    
 </head>
 <body>
     <div class="wrapper">
@@ -117,12 +126,10 @@
                             <label for="numberOfSpeakers">Number of Speakers:</label>
                             <input type="number" id="numberOfSpeakers" name="numberOfSpeakers" min="1" max="10" value="2">
                         
-                            <label for="modelSize">Model Size:</label>
-                            <select id="modelSize" name="modelSize">
-                                <option value="tiny" selected>Tiny</option>
-                                <option value="small">Small</option>
-                                <option value="medium">Medium</option>
-                                <option value="large">Large</option>
+                            <label for="lang">Language:</label>
+                            <select id="lang" name="lang">
+                                <option value="en" selected>English</option>
+                                <option value="nl">Dutch</option>
                             </select>
                         </div>
 
@@ -133,10 +140,18 @@
                                 <div class="message bot-message">Bot.</div>
                                 <div class="clear"></div>
                                 
-                            <audio id="audio" src="" controls></audio>
+                                <audio id="audio" src="" controls></audio>
+                                
+                                <div class="transcript"></div>
+                                <button id="toggleButton">Toggle Description</button>
+                                <p id="hiddenParagraph" class="hidden-paragraph"></p>
                             </div>
                         </div>
                       </div>
+
+                    
+
+                    
 
                       
                     </div>
@@ -155,6 +170,13 @@
         </div>
     </div>
 
+    <script>
+        // JavaScript to toggle the visibility of the paragraph
+        document.getElementById('toggleButton').addEventListener('click', function() {
+            var hiddenParagraph = document.getElementById('hiddenParagraph');
+            hiddenParagraph.classList.toggle('hidden-paragraph');
+        });
+    </script>
      <script src="{{ url_for('static', filename='js/script.js') }}"></script>
      <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 </body>
