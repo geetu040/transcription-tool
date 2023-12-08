@@ -19,6 +19,7 @@ def watcher(func):
 		return result
 	return wrapper
 
+# ----> THIS IS THE MAIN FUNCTION FOR TRANSCRIPTION AND DIARIZATION
 def transcribe(file_path, num_speakers, lang):
 	transcript = transcribe_assembly(file_path, num_speakers, lang)
 	transcript = identify_speakers(transcript)

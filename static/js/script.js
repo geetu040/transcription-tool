@@ -37,6 +37,7 @@ const red_circle = document.getElementById('red-circ')
 let pause = document.getElementById('pause');
 const play = document.getElementById('play');
 const uplaod_btn = document.getElementById('upload-btn');
+const process_btn = document.getElementById('process');
 const upload_input = document.createElement('input');
 const audio = document.getElementById('audio');
 upload_input.type = "file";
@@ -309,22 +310,34 @@ function send_dat(blob) {
             console.error('Error:', error);
         });
 }
+
 upload_input.addEventListener("change", () => {
     let file = upload_input.files[0];
-    console.log(file);
     let url;
-    try {
-        if (file) {
-            console.log(file);
-            url = URL.createObjectURL(file);
-            console.log(url);
-            audio.src = url;
-            // send_dat(file);
-            handle_audio_file(file);
 
-        }
+    if (file) {
+        console.log(file);
+        url = URL.createObjectURL(file);
+        console.log(url);
+        audio.src = url;
+    }
+    else {
+        console.log("uncalble to get the file")
+    }
+})
 
-    } catch (error) {
+process_btn.addEventListener("click", () => {
+    let file = upload_input.files[0];
+    let url;
+
+    if (file) {
+        // console.log(file);
+        // url = URL.createObjectURL(file);
+        // console.log(url);
+        // audio.src = url;
+        handle_audio_file(file);
+    }
+    else {
         console.log("uncalble to get the file")
     }
 
@@ -347,6 +360,8 @@ function handle_audio_file(file) {
         // Replace 'YOUR_SERVER_URL' with the actual URL where you want to send the file
         const serverUrl = '/handle_audio_file';
 
+        showLoadingSpinner()
+
         fetch(serverUrl, {
             method: 'POST',
             body: formData
@@ -357,13 +372,24 @@ function handle_audio_file(file) {
                 // data.transcription
                 document.getElementsByClassName("transcript")[0].innerText = data.transcription;
                 document.getElementById("hiddenParagraph").innerText = data.description;
+                hideLoadingSpinner();
             })
             .catch(error => {
                 console.error('Error uploading file:', error);
+                hideLoadingSpinner();
             });
 
     } else {
         // File is not an audio file
         console.error('Selected file is not an audio file or has an unsupported format:', file.name);
     }
+}
+
+
+function showLoadingSpinner() {
+    document.getElementById("loading-spinner").classList.remove("hidden");
+}
+
+function hideLoadingSpinner() {
+    document.getElementById("loading-spinner").classList.add("hidden");
 }
